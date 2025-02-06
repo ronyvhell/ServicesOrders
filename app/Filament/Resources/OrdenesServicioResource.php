@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Support\Collection;
 use Filament\Notifications\Notification;
+use App\Models\Vehiculos;
 
 class OrdenesServicioResource extends Resource
 {
@@ -44,7 +45,18 @@ class OrdenesServicioResource extends Resource
                                     Forms\Components\Select::make('cliente_id')
                                         ->label('Cliente')
                                         ->searchable()
-                                        ->relationship('cliente', 'nombre')
+                                        ->relationship('cliente', 'nombre', function ($query) {
+                                            return $query->select('id', 'nombre', 'apellido');
+                                        })
+                                        ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->nombre} {$record->apellido}")
+                                        ->afterStateUpdated(function (callable $set, $state) {
+                                            // Buscar el primer vehículo del cliente
+                                            $vehiculo = \App\Models\Vehiculos::where('cliente_id', $state)->first();
+                                            
+                                            if ($vehiculo) {
+                                                $set('vehiculo_id', $vehiculo->id);
+                                            }
+                                        })
                                         ->createOptionForm([
                                             Forms\Components\Grid::make(2) // Configura el grid para que tenga 2 columnas
                                                 ->schema([
@@ -263,11 +275,11 @@ class OrdenesServicioResource extends Resource
                         ->schema([
                             Forms\Components\Grid::make(1)
                                 ->schema([
-                                    Forms\Components\Textarea::make('fallas_detectadas')
+                                    Forms\Components\RichEditor::make('fallas_detectadas')
                                         ->label('Fallas Detectadas - Nuevas')
                                         ->required()
                                         ->placeholder('Describe las fallas detectadas durante la inspección'),
-                                    Forms\Components\Textarea::make('objetos_valor')
+                                    Forms\Components\RichEditor::make('objetos_valor')
                                         ->label('Objetos de Valor Reportados')
                                         ->placeholder('Objetos de valor encontrados en el vehículo'),
                                     Forms\Components\CheckboxList::make('documentos_vehiculo')
@@ -287,7 +299,6 @@ class OrdenesServicioResource extends Resource
                                 ->schema([
                                     Forms\Components\FileUpload::make('foto_frente')
                                         ->label('Fotografía 1')
-                                        ->required()
                                         ->downloadable()
                                         ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                         ->maxSize(9024)
@@ -297,7 +308,6 @@ class OrdenesServicioResource extends Resource
                                         ]),
                                     Forms\Components\FileUpload::make('foto_atras')
                                         ->label('Fotografía 2')
-                                        ->required()
                                         ->downloadable()
                                         ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                         ->maxSize(9024)
@@ -307,7 +317,6 @@ class OrdenesServicioResource extends Resource
                                         ]),
                                     Forms\Components\FileUpload::make('foto_lateral_izquierdo')
                                         ->label('Fotografía 3')
-                                        ->required()
                                         ->downloadable()
                                         ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                         ->maxSize(9024)
@@ -317,7 +326,6 @@ class OrdenesServicioResource extends Resource
                                         ]),
                                     Forms\Components\FileUpload::make('foto_lateral_derecho')
                                         ->label('Fotografía 4')
-                                        ->required()
                                         ->downloadable()
                                         ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                         ->maxSize(9024)

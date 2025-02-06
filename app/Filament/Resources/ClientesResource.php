@@ -18,10 +18,10 @@ class ClientesResource extends Resource
     protected static ?string $model = Clientes::class;
 
     // Edición Módulo
-    protected static ?string $navigationIcon = 'heroicon-o-user-group'; // Icono del Módulo
-    protected static ?string $navigationLabel = 'Clientes'; // Título del Módulo 
-    protected static ?string $navigationGroup = 'Clientes y Vehículos'; // Dividir Módulos en Grupos
-    protected static ?int $navigationSort = 2; // Orden de Aparición en el Menú
+    protected static ?string $navigationIcon = 'heroicon-o-user-group'; 
+    protected static ?string $navigationLabel = 'Clientes'; 
+    protected static ?string $navigationGroup = 'Clientes y Vehículos'; 
+    protected static ?int $navigationSort = 2; 
 
     public static function form(Form $form): Form
     {
@@ -64,6 +64,15 @@ class ClientesResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('documento_identidad')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('vehiculos')
+                    ->label('Vehículos')
+                    ->getStateUsing(function ($record) {
+                        // Obtiene los vehículos del cliente
+                        return $record->vehiculos->pluck('placa')->implode(', ');
+                    })
+                    ->badge()
+                    ->color('primary')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -89,7 +98,7 @@ class ClientesResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\VehiculosRelationManager::class,
         ];
     }
 

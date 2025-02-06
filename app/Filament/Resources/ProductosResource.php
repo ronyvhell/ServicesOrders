@@ -28,18 +28,19 @@ class ProductosResource extends Resource
                 Forms\Components\TextInput::make('nombre')
                     ->required()
                     ->maxLength(191),
-                Forms\Components\TextInput::make('descripcion')
-                    ->required()
-                    ->maxLength(191),
                 Forms\Components\TextInput::make('precio')
                     ->required()
                     ->numeric(),
-                Forms\Components\FileUpload::make('imagen') // Cambiado a FileUpload
+                Forms\Components\FileUpload::make('imagen')
                     ->label('Imagen')
-                    ->image() // Define que es un archivo de imagen
-                    ->directory('productos') // Carpeta donde se guardarán las imágenes
-                    ->maxSize(1024) // Tamaño máximo del archivo en KB (opcional)
-                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg']), // Tipos de archivos permitidos
+                    ->image()
+                    ->directory('productos')
+                    ->imageEditor()
+                    ->downloadable()
+                    ->required(),
+                Forms\Components\RichEditor::make('descripcion')
+                    ->required()
+                    ->maxLength(191),
             ]);
     }
 
@@ -47,6 +48,12 @@ class ProductosResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('imagen')
+                    ->label('Imagen')
+                    ->square() // Hace la imagen cuadrada
+                    ->height(100) // Altura de la imagen
+                    ->width(100)  // Ancho de la imagen
+                    ->alignCenter(), // Centra la imagen en la columna
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
