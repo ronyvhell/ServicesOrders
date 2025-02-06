@@ -86,4 +86,9 @@ class OrdenesServicio extends Model
     {
         return $this->hasMany(DocumentosOrdenesServicio::class, 'orden_servicio_id');
     }
+
+    public function clienteRecurrente()
+    {
+        return $this->belongsTo(ClientesRecurrentes::class, 'cliente_id', 'id');
+    }
 }

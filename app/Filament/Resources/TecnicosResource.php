@@ -21,7 +21,13 @@ class TecnicosResource extends Resource
     protected static ?string $navigationLabel = 'Tecnicos'; // Título del Módulo 
     protected static ?string $navigationGroup = 'Configuración'; // Dividir Módulos en Grupos
     protected static ?int $navigationSort = 4; // Orden de Aparición en el Menú
+    
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    
     public static function form(Form $form): Form
     {
         return $form

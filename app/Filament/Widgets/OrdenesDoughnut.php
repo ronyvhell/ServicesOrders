@@ -13,7 +13,7 @@ class OrdenesDoughnut extends ChartWidget
 
     protected function getType(): string
     {
-        return 'doughnut';
+        return 'pie';
     }
 
     protected function getData(): array

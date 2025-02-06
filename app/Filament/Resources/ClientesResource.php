@@ -21,7 +21,12 @@ class ClientesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group'; 
     protected static ?string $navigationLabel = 'Clientes'; 
     protected static ?string $navigationGroup = 'Clientes y Vehículos'; 
-    protected static ?int $navigationSort = 2; 
+    protected static ?int $navigationSort = 3; 
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {

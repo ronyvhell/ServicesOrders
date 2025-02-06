@@ -32,7 +32,14 @@ class OrdenesServicioResource extends Resource
     protected static ?string $navigationGroup = 'Gestión de órdenes';
     protected static ?int $navigationSort = 1;
 
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Form $form): Form
+
     {
         return $form
             ->columns(1)

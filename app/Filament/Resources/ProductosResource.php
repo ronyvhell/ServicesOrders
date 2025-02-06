@@ -57,7 +57,10 @@ class ProductosResource extends Resource
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
-                    ->searchable(),
+                    ->label('Descripción')
+                    ->html()
+                    ->wrap()
+                    ->limit(100),
                 Tables\Columns\TextColumn::make('precio')
                     ->numeric()
                     ->sortable(),
